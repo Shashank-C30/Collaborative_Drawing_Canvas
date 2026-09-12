@@ -24,6 +24,7 @@ app.use(express.json());
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
+  path: "/api/socket",
   cors: {
     origin: allowedOrigins,
     methods: ["GET", "POST"],
@@ -594,8 +595,12 @@ io.on("connection", (socket) => {
 /*
  * Start server
  */
-httpServer.listen(PORT, () => {
-  console.log(
-    `Server running at http://localhost:${PORT}`
-  );
-});
+if (!process.env.VERCEL) {
+  httpServer.listen(PORT, () => {
+    console.log(
+      `Server running at http://localhost:${PORT}`
+    );
+  });
+}
+
+export default httpServer;
