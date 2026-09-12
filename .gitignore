@@ -1,0 +1,3 @@
+client/dist/
+server/dist/
+*.tsbuildinfo

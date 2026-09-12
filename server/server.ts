@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { createServer } from "http";
+import path from "path";
 import { Server, Socket } from "socket.io";
 
 import { Room } from "./src/room";
@@ -13,19 +14,24 @@ import type {
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = process.env.CLIENT_ORIGIN
+  ? process.env.CLIENT_ORIGIN.split(",")
+  : true;
+
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
   },
 });
 
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
+const clientDist = path.resolve(process.cwd(), "../client/dist");
 
 const rooms = new Map<string, Room>();
 const drawingStates = new Map<string, DrawingState>();
@@ -92,11 +98,16 @@ function getUserColor(room: Room): string {
 /*
  * Health check
  */
-app.get("/", (_req, res) => {
+app.get("/api/health", (_req, res) => {
   res.json({
     status: "ok",
     message: "Collaborative drawing server is running",
   });
+});
+
+app.use(express.static(clientDist));
+app.use((_req, res) => {
+  res.sendFile(path.join(clientDist, "index.html"));
 });
 
 /*

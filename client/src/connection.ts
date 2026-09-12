@@ -11,7 +11,10 @@ import type {
 } from "../../server/src/protocol";
 
 const SERVER_URL =
-  "http://localhost:3000";
+  import.meta.env.VITE_SERVER_URL ??
+  (import.meta.env.DEV
+    ? "http://localhost:3000"
+    : window.location.origin);
 
 export const socket: Socket =
   io(SERVER_URL, {

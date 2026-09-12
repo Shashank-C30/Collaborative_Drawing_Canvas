@@ -6,7 +6,7 @@
     "moduleResolution": "NodeNext",
 
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": ".",
 
     "strict": true,
     "esModuleInterop": true,
@@ -15,6 +15,6 @@
     "forceConsistentCasingInFileNames": true
   },
 
-  "include": ["src/**/*.ts"],
+  "include": ["server.ts", "src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
